@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UC — Obtén tu beca del 50%</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:#ffffff;
+    color:#1a1a1a;
+    overflow-x:hidden;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== Fondo con degradado claro ===== */
+  .bg-gradient{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(220,38,38,0.08), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(220,38,38,0.05), transparent 50%),
+      #ffffff;
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:-1;
+    background-image:
+      linear-gradient(rgba(220,38,38,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220,38,38,0.05) 1px, transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);
+  }
+
+  /* ===== Header ===== */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:20px 5%;
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(220,38,38,0.15);
+    display:flex;align-items:center;justify-content:space-between;
+    transition:padding .3s ease, box-shadow .3s ease;
+  }
+  header.scrolled{padding:12px 5%;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+  .header-vigilada{
+    font-size:10px;color:#1a1a1a;letter-spacing:3px;
+    font-weight:700;text-transform:uppercase;
+  }
+  .header-cta{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    color:#ffffff;border:none;padding:10px 22px;border-radius:999px;
+    font-weight:700;font-size:13px;cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease;
+    text-decoration:none;letter-spacing:.3px;
+  }
+  .header-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(220,38,38,0.4)}
+
+  /* ===== HERO ===== */
+  .hero{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:60px;
+    align-items:center;
+    padding:140px 5% 80px;
+    position:relative;
+  }
+  .hero-content{opacity:0;transform:translateY(40px);animation:fadeUp 1s ease .2s forwards}
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(220,38,38,0.12);
+    border:1px solid rgba(220,38,38,0.35);
+    color:#ef4444;
+    padding:8px 16px;border-radius:999px;
+    font-size:12px;font-weight:600;letter-spacing:1.5px;
+    margin-bottom:28px;
+    text-transform:uppercase;
+  }
+  .hero-badge .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#dc2626;
+    box-shadow:0 0 12px #dc2626;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .hero h1{
+    font-size:clamp(2.4rem,5vw,4.4rem);
+    font-weight:900;
+    line-height:1.05;
+    letter-spacing:-1.5px;
+    margin-bottom:24px;
+    color:#0a0a0a;
+  }
+  .hero h1 .gold{
+    background:linear-gradient(135deg,#dc2626 0%,#ef4444 50%,#dc2626 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-size:200% 200%;
+    animation:shine 4s ease infinite;
+  }
+  @keyframes shine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+  .hero p.lead{
+    font-size:1.1rem;color:#555;max-width:520px;
+    margin-bottom:36px;font-weight:400;
+  }
+  .hero-stats{display:flex;gap:36px;margin-bottom:36px;flex-wrap:wrap}
+  .stat{display:flex;flex-direction:column}
+  .stat .num{
+    font-size:2rem;font-weight:800;color:#dc2626;
+    line-height:1;
+  }
+  .stat .lbl{font-size:12px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:6px;font-weight:600}
+
+  .hero-bullets{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .hero-bullets li{display:flex;align-items:center;gap:12px;font-size:14px;color:#333;font-weight:500}
+  .hero-bullets li::before{
+    content:"✓";
+    width:24px;height:24px;
+    background:#dc2626;
+    color:#ffffff;
+    border-radius:50%;
+    display:grid;place-items:center;
+    font-size:12px;font-weight:700;
+    flex-shrink:0;
+  }
+
+  /* ===== Formulario ===== */
+  .form-card{
+    background:#ffffff;
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:24px;
+    padding:42px 38px;
+    box-shadow:
+      0 30px 80px rgba(220,38,38,0.12),
+      0 10px 30px rgba(0,0,0,0.08);
+    position:relative;
+    opacity:0;transform:translateY(40px) scale(.97);
+    animation:fadeUp 1s ease .5s forwards;
+    overflow:hidden;
+  }
+  .form-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,#dc2626,#ef4444,#dc2626);
+  }
+  .form-title{
+    font-size:1.6rem;font-weight:800;letter-spacing:-.5px;
+    margin-bottom:6px;color:#0a0a0a;
+  }
+  .form-title .gold{color:#dc2626}
+  .form-sub{font-size:13.5px;color:#666;margin-bottom:28px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .form-group{display:flex;flex-direction:column;margin-bottom:14px;position:relative}
+  .form-group label{
+    font-size:11px;font-weight:700;letter-spacing:1px;
+    color:#dc2626;text-transform:uppercase;margin-bottom:8px;
+  }
+  .form-group input,
+  .form-group select{
+    width:100%;
+    padding:14px 16px;
+    background:#f7f7f7;
+    border:1.5px solid rgba(0,0,0,0.08);
+    border-radius:12px;
+    color:#0a0a0a;font-size:14px;font-family:inherit;
+    transition:all .25s ease;
+    outline:none;
+  }
+  .form-group input::placeholder{color:#999}
+  .form-group input:focus,
+  .form-group select:focus{
+    border-color:#dc2626;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(220,38,38,0.12);
+  }
+  .form-group select{
+    appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    padding-right:42px;
+    cursor:pointer;
+  }
+  .form-group select optgroup{
+    background:#fff;
+    color:#dc2626;
+    font-weight:700;
+    font-style:normal;
+    padding:8px;
+  }
+  .form-group select option{
+    background:#fff;
+    color:#0a0a0a;
+    padding:10px;
+  }
+
+  .submit-btn{
+    width:100%;
+    padding:18px;
+    background:linear-gradient(135deg,#dc2626 0%,#ef4444 50%,#991b1b 100%);
+    background-size:200% 200%;
+    color:#ffffff;
+    border:none;border-radius:14px;
+    font-size:15px;font-weight:800;letter-spacing:.5px;
+    cursor:pointer;
+    text-transform:uppercase;
+    margin-top:10px;
+    transition:all .3s ease;
+    position:relative;overflow:hidden;
+  }
+  .submit-btn::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,#ef4444,#dc2626,#ef4444);
+    opacity:0;transition:opacity .3s ease;
+  }
+  .submit-btn span{position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px}
+  .submit-btn:hover{transform:translateY(-3px);box-shadow:0 20px 40px rgba(220,38,38,0.35)}
+  .submit-btn:hover::before{opacity:1}
+  .submit-btn:active{transform:translateY(-1px)}
+
+  .form-trust{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:18px;
+    font-size:11.5px;color:#777;
+  }
+  .form-trust svg{width:14px;height:14px;flex-shrink:0;color:#dc2626}
+
+  /* ===== SECCIÓN DATOS / PROCESO ===== */
+  .section{padding:120px 5%;position:relative}
+  .section-eyebrow{
+    display:block;text-align:center;
+    font-size:12px;letter-spacing:3px;color:#dc2626;
+    text-transform:uppercase;font-weight:700;margin-bottom:14px;
+  }
+  .section-title{
+    font-size:clamp(1.9rem,3.5vw,3rem);
+    font-weight:800;text-align:center;letter-spacing:-1px;
+    margin-bottom:60px;line-height:1.1;color:#0a0a0a;
+  }
+  .section-title .gold{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+
+  .pillars{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:28px;
+    max-width:1200px;margin:0 auto;
+  }
+  .pillar{
+    background:#ffffff;
+    border:1.5px solid rgba(0,0,0,0.06);
+    border-radius:20px;padding:36px 28px;
+    transition:all .4s ease;
+    opacity:0;transform:translateY(30px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.04);
+  }
+  .pillar.visible{opacity:1;transform:translateY(0)}
+  .pillar:hover{
+    transform:translateY(-8px);
+    border-color:#dc2626;
+    box-shadow:0 25px 60px rgba(220,38,38,0.18);
+  }
+  .pillar-icon{
+    width:54px;height:54px;border-radius:14px;
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    display:grid;place-items:center;
+    margin-bottom:22px;
+    box-shadow:0 8px 20px rgba(220,38,38,0.3);
+  }
+  .pillar-icon svg{width:26px;height:26px;color:#ffffff}
+  .pillar h3{font-size:1.2rem;font-weight:700;margin-bottom:10px;color:#0a0a0a}
+  .pillar p{color:#666;font-size:14px;line-height:1.6}
+
+  /* ===== PROGRAMAS ===== */
+  .programs{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+    max-width:1200px;margin:0 auto;
+  }
+  .program-faculty{
+    background:#ffffff;
+    border:1.5px solid rgba(0,0,0,0.06);
+    border-radius:20px;
+    padding:32px 28px;
+    transition:all .35s ease;
+    opacity:0;transform:translateY(30px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.04);
+    position:relative;
+    overflow:hidden;
+  }
+  .program-faculty::after{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,#dc2626,#ef4444);
+  }
+  .program-faculty.visible{opacity:1;transform:translateY(0)}
+  .program-faculty:hover{
+    border-color:#dc2626;
+    transform:translateY(-6px);
+    box-shadow:0 25px 60px rgba(220,38,38,0.18);
+  }
+  .faculty-tag{
+    display:inline-block;
+    font-size:10px;letter-spacing:2px;
+    color:#ffffff;font-weight:700;
+    text-transform:uppercase;margin-bottom:14px;
+    padding:6px 14px;
+    background:#0a0a0a;
+    border-radius:999px;
+  }
+  .faculty-name{
+    font-size:1.05rem;font-weight:700;
+    margin-bottom:18px;line-height:1.3;color:#0a0a0a;
+  }
+  .program-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .program-list li{
+    font-size:13.5px;color:#333;font-weight:500;
+    padding:10px 0;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    display:flex;align-items:center;gap:10px;
+  }
+  .program-list li::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:#dc2626;flex-shrink:0;
+  }
+  .program-list li:last-child{border-bottom:none}
+
+  /* ===== CTA FINAL ===== */
+  .cta-final{
+    text-align:center;
+    padding:120px 5%;
+    background:#0a0a0a;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-final::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse at center, rgba(220,38,38,0.25), transparent 60%);
+  }
+  .cta-final > *{position:relative;z-index:1}
+  .cta-final h2{
+    font-size:clamp(2rem,4vw,3.4rem);
+    font-weight:900;letter-spacing:-1px;
+    margin-bottom:18px;line-height:1.1;color:#fff;
+  }
+  .cta-final p{
+    color:#ccc;font-size:1.05rem;
+    max-width:560px;margin:0 auto 36px;
+  }
+  .cta-final .btn-big{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:20px 44px;
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    color:#ffffff;text-decoration:none;
+    border-radius:999px;font-weight:800;font-size:15px;
+    letter-spacing:.5px;text-transform:uppercase;
+    transition:all .3s ease;
+    box-shadow:0 15px 40px rgba(220,38,38,0.4);
+  }
+  .cta-final .btn-big:hover{
+    transform:translateY(-4px);
+    box-shadow:0 25px 60px rgba(220,38,38,0.6);
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    padding:50px 5% 30px;
+    background:#0a0a0a;
+    border-top:3px solid #dc2626;
+    text-align:center;
+    color:#aaa;font-size:12.5px;letter-spacing:.5px;
+  }
+  footer .vigilada{
+    color:#dc2626;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;margin-top:10px;font-weight:700;
+  }
+
+  /* ===== Modal éxito ===== */
+  .modal{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(10,10,10,0.7);
+    backdrop-filter:blur(10px);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .modal.active{display:flex}
+  .modal-content{
+    background:#ffffff;
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:24px;
+    padding:50px 40px;
+    max-width:480px;width:100%;
+    text-align:center;
+    animation:modalIn .5s ease;
+    box-shadow:0 30px 80px rgba(220,38,38,0.25);
+    position:relative;
+    overflow:hidden;
+  }
+  .modal-content::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,#dc2626,#ef4444,#dc2626);
+  }
+  @keyframes modalIn{
+    from{opacity:0;transform:scale(.85)}
+    to{opacity:1;transform:scale(1)}
+  }
+  .modal-icon{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    display:grid;place-items:center;margin:0 auto 24px;
+    box-shadow:0 10px 30px rgba(220,38,38,0.4);
+  }
+  .modal-icon svg{width:42px;height:42px;color:#ffffff}
+  .modal h3{font-size:1.6rem;font-weight:800;margin-bottom:10px;color:#0a0a0a}
+  .modal p{color:#666;font-size:14.5px;margin-bottom:26px}
+  .modal button{
+    padding:14px 32px;border:none;border-radius:999px;
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    color:#ffffff;font-weight:700;cursor:pointer;font-size:13px;
+    text-transform:uppercase;letter-spacing:.8px;
+  }
+
+  @keyframes fadeUp{
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+
+  /* ===== Responsive ===== */
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr;padding-top:120px;gap:50px}
+    .pillars,.programs{grid-template-columns:1fr}
+    .form-card{padding:32px 26px}
+    .logo-wrap .logo-text strong{font-size:11px}
+    .logo-wrap .logo-text span{font-size:9px}
+    .logo-wrap img{height:38px}
+    .hero-stats{gap:22px}
+    .stat .num{font-size:1.6rem}
+  }
+  @media(max-width:520px){
+    .form-row{grid-template-columns:1fr}
+    .header-cta{display:none}
+    header{padding:14px 5%}
+    .section{padding:80px 5%}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+
+<header id="header">
+  <span class="header-vigilada">Vigilada Mineducación</span>
+  <a href="#formulario" class="header-cta">Aplicar a la beca</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Cupos limitados — Convocatoria abierta
+    </div>
+    <h1>
+      Obtén tu <span class="gold">beca del 50%</span>
+      en la carrera de tu vida
+    </h1>
+    <p class="lead">
+      Forma parte de la Corporación Universitaria de Ciencias Empresariales,
+      Educación y Salud. Programas profesionales y tecnológicos con acompañamiento
+      personalizado y descuento exclusivo para nuevos estudiantes.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="num">50%</span>
+        <span class="lbl">Descuento beca</span>
+      </div>
+      <div class="stat">
+        <span class="num">8+</span>
+        <span class="lbl">Programas</span>
+      </div>
+      <div class="stat">
+        <span class="num">100%</span>
+        <span class="lbl">Vigilada Mineducación</span>
+      </div>
+    </div>
+
+    <ul class="hero-bullets">
+      <li>Aplicación inmediata en menos de 2 minutos</li>
+      <li>Asesoría personalizada para tu inscripción</li>
+      <li>Programas presenciales y a distancia</li>
+    </ul>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="form-card" id="formulario">
+    <h2 class="form-title">Aplica a tu <span class="gold">beca del 50%</span></h2>
+    <p class="form-sub">Completa el formulario y un asesor te contactará hoy mismo.</p>
+
+    <form id="lead-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="programa">Programa de interés</label>
+        <select id="programa" name="programa" required>
+          <option value="" disabled selected>Selecciona tu programa</option>
+          <optgroup label="Facultad de Ciencias de la Salud">
+            <option value="Tecnólogo en Radiología e Imágenes Diagnósticas">Tecnólogo en Radiología e Imágenes Diagnósticas</option>
+          </optgroup>
+          <optgroup label="Facultad de Ciencias Empresariales, Económicas y Afines">
+            <option value="Administración de Empresas">Administración de Empresas</option>
+            <option value="Tecnología en Gestión Administrativa">Tecnología en Gestión Administrativa</option>
+            <option value="Tecnología en Gestión Logística">Tecnología en Gestión Logística</option>
+          </optgroup>
+          <optgroup label="Facultad de Ingeniería">
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            <option value="Ingeniería de Energías Renovables">Ingeniería de Energías Renovables</option>
+            <option value="Ingeniería Ambiental">Ingeniería Ambiental</option>
+            <option value="Ingeniería de Software">Ingeniería de Software</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono / WhatsApp</label>
+          <input type="tel" id="telefono" name="telefono" placeholder="+57 300 000 0000" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="ciudad">Ciudad</label>
+        <input type="text" id="ciudad" name="ciudad" placeholder="¿Desde qué ciudad nos escribes?" required>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <span>
+          Quiero mi beca del 50%
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </span>
+      </button>
+
+      <div class="form-trust">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Tus datos están protegidos — Ley 1581 de 2012
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- POR QUÉ UC -->
+<section class="section">
+  <span class="section-eyebrow">¿Por qué elegir UC?</span>
+  <h2 class="section-title">Educación que <span class="gold">transforma vidas</span></h2>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <h3>Beca del 50%</h3>
+      <p>Reduce el costo de tu carrera a la mitad y haz realidad tu sueño profesional con una inversión accesible.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 7h-7m7 5h-7m7 5h-7"/>
+          <circle cx="6" cy="7" r="2"/>
+          <circle cx="6" cy="12" r="2"/>
+          <circle cx="6" cy="17" r="2"/>
+        </svg>
+      </div>
+      <h3>Programas con propósito</h3>
+      <p>Salud, Empresariales e Ingeniería. Carreras alineadas con las industrias que más están creciendo en Colombia.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <h3>Atención inmediata</h3>
+      <p>Un asesor de admisiones te contactará el mismo día para guiarte en cada paso del proceso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMAS -->
+<section class="section" id="programas">
+  <span class="section-eyebrow">Oferta académica</span>
+  <h2 class="section-title">Encuentra tu <span class="gold">programa ideal</span></h2>
+
+  <div class="programs">
+    <div class="program-faculty">
+      <span class="faculty-tag">Salud</span>
+      <h3 class="faculty-name">Facultad de Ciencias de la Salud</h3>
+      <ul class="program-list">
+        <li>Tecnólogo en Radiología e Imágenes Diagnósticas</li>
+      </ul>
+    </div>
+
+    <div class="program-faculty">
+      <span class="faculty-tag">Empresariales</span>
+      <h3 class="faculty-name">Facultad de Ciencias Empresariales, Económicas y Afines</h3>
+      <ul class="program-list">
+        <li>Administración de Empresas</li>
+        <li>Tecnología en Gestión Administrativa</li>
+        <li>Tecnología en Gestión Logística</li>
+      </ul>
+    </div>
+
+    <div class="program-faculty">
+      <span class="faculty-tag">Ingeniería</span>
+      <h3 class="faculty-name">Facultad de Ingeniería</h3>
+      <ul class="program-list">
+        <li>Ingeniería Industrial</li>
+        <li>Ingeniería de Energías Renovables</li>
+        <li>Ingeniería Ambiental</li>
+        <li>Ingeniería de Software</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2>Tu futuro empieza con <span class="gold" style="background:linear-gradient(135deg,#dc2626,#ef4444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">una decisión</span></h2>
+  <p>No dejes pasar la oportunidad. Aplica ahora y asegura tu cupo con beca del 50%.</p>
+  <a href="#formulario" class="btn-big">
+    Quiero mi beca ahora
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </a>
+</section>
+
+<footer>
+  <div>© 2026 Corporación Universitaria de Ciencias Empresariales, Educación y Salud</div>
+  <div class="vigilada">Vigilada Mineducación</div>
+</footer>
+
+<!-- Modal éxito -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <h3>¡Solicitud enviada!</h3>
+    <p>Hemos recibido tu información. Un asesor de UC te contactará en las próximas horas para confirmar tu beca del 50%.</p>
+    <button onclick="document.getElementById('modal').classList.remove('active')">Entendido</button>
+  </div>
+</div>
+
+<script>
+  // Header con scroll
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // Animación scroll para pilares y programas
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 120);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.pillar, .program-faculty').forEach(el => observer.observe(el));
+
+  // Submit del formulario
+  const form = document.getElementById('lead-form');
+  const modal = document.getElementById('modal');
+
+  // WhatsApp del asesor que recibe los leads
+  const WHATSAPP_NUMERO = '573184767370';
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    const mensaje =
+      `Hola, quiero aplicar a la *beca del 50%* de UC.\n\n` +
+      `*Nombre:* ${data.nombre} ${data.apellido}\n` +
+      `*Programa:* ${data.programa}\n` +
+      `*Email:* ${data.email}\n` +
+      `*Teléfono:* ${data.telefono}\n` +
+      `*Ciudad:* ${data.ciudad}`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+
+    modal.classList.add('active');
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
