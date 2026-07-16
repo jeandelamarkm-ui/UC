@@ -740,6 +740,14 @@ src="https://www.facebook.com/tr?id=2976025916012242&ev=PageView&noscript=1"
       `*Teléfono:* ${data.telefono}\n` +
       `*Ciudad:* ${data.ciudad}`;
 
+    // Evento de conversión Meta Pixel: lead solicitado
+    if (typeof fbq === 'function') {
+      fbq('track', 'Lead', {
+        content_name: 'Beca 50% UC',
+        content_category: data.programa || 'Sin programa'
+      });
+    }
+
     const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 
